@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "rootDir": ".",
+    "strict": true,
+    "noEmit": false,
+    "resolveJsonModule": true,
+    "noUnusedLocals": true,
+    "outDir": "./dist"
+  },
+  "include": [
+    "src/**/**.ts",
+    "tests/**/**.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/original/apps/backoffice/frontend"
+  ]
+}
