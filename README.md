@@ -94,9 +94,6 @@ cp .env.example .env
 ```bash
 # Run all tests
 npm test
-
-# Run tests with coverage
-npm run test:coverage
 ```
 
 ### Development
