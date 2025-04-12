@@ -16,12 +16,12 @@ export default class ReservationDate {
 
   private validate(): void {
     if (!(this.date instanceof Date) || isNaN(this.date.getTime())) {
-      throw new ReservationDateInvalidError('Invalid date');
+      throw new ReservationDateInvalidError('Invalid date has been provided');
     }
   }
 
   public toString(): string {
-    return this.date.toUTCString();
+    return this.date.toString();
   }
 
   public toISOString(): string {

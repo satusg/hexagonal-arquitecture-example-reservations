@@ -26,7 +26,10 @@ export default class ReservationType {
     return this.value;
   }
 
-  equals(other: ReservationType): boolean {
+  equals(other: unknown): boolean {
+    if (!(other instanceof ReservationType)) {
+      return false;
+    }
     return this.value === other.value;
   }
 

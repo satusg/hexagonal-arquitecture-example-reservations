@@ -89,11 +89,17 @@ npm install
 cp .env.example .env
 ```
 
-### Running Tests
+### Running Tests ( Only reservations folder based on jest.config.js)
 
 ```bash
 # Run all tests
 npm test
+
+# Run all tests and watch how they change.
+npm test:watch
+
+#Run all integration tests
+test:integration
 ```
 
 ### Development

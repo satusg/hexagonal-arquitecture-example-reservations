@@ -29,9 +29,13 @@ export default class ReservationUUID {
     return this.value;
   }
 
-  equals(other: ReservationUUID): boolean {
-    return this.value === other.value;
+  equals(other: unknown): boolean {
+    if (!(other instanceof ReservationUUID)) {
+      return false;
+    }
+    return this.value.toString() === other.value.toString();
   }
+  
 
   toString(): string {
     return this.value.toString();

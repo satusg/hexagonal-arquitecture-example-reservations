@@ -14,10 +14,10 @@ export default class ReservationCustomer {
     return new ReservationCustomer(name, email);
   }
 
-  static fromStrings(name: string, email: string): ReservationCustomer {
+  static fromPrimitives(props: {name: string, email: string}): ReservationCustomer {
     return new ReservationCustomer(
-      ReservationCustomerName.fromString(name),
-      ReservationCustomerEmail.fromString(email)
+      ReservationCustomerName.fromString(props.name),
+      ReservationCustomerEmail.fromString(props.email)
     );
   }
 
