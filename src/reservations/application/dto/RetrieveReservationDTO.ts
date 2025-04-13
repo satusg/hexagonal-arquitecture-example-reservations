@@ -1,6 +1,12 @@
 export type RetrieveReservationDTO = {
   uuid?: string;
   type?: string;
-  dateFrom?: string;
-  dateTo?: string;
+  date?: {
+    from?: string,
+    to?: string,
+  },
+  customer?: {
+    email?: string,
+    name?: string
+  }
 };

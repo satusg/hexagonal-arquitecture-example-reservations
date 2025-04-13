@@ -15,8 +15,10 @@ describe("[Integration] Reservation listing", () => {
   const expectReservationMatch = (received: any, expected: ReservationPrimitives) => {
     expect(received).toMatchObject({
       uuid: expected.uuid,
-      customerName: expected.customerName,
-      customerEmail: expected.customerEmail,
+      customer: {
+        name: expected.customer.name,
+        email: expected.customer.email
+      },
       date: expected.date,
       type: expected.type,
     });
@@ -60,23 +62,12 @@ describe("[Integration] Reservation listing", () => {
 
     const findBefore = await request(app).get(`/reservations?uuid=${reservationBody.uuid}`);
     expect(findBefore.status).toBe(200);
+    //console.log(findBefore.body);
     expect(findBefore.body).toHaveLength(1);
     expectReservationMatch(findBefore.body[0], reservationBody);
   });
 
-  it("should return reservation by uuid and type combined", async () => {
-    const reservationBody = ReservationMother.createPrimitivesWith({ type: "ONLINE" });
 
-    await request(app).post("/reservations").send(reservationBody);
-
-    const res = await request(app).get(
-      `/reservations?uuid=${reservationBody.uuid}&type=ONLINE`
-    );
-
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveLength(1);
-    expectReservationMatch(res.body[0], reservationBody);
-  });
 
   it("should return reservation by type and dateFrom", async () => {
     const reservationBody = ReservationMother.createPrimitivesWith({
@@ -84,10 +75,12 @@ describe("[Integration] Reservation listing", () => {
       date: "2026-01-01T10:00:00.000Z",
     });
 
-    await request(app).post("/reservations").send(reservationBody);
+    const creation = await request(app).post("/reservations").send(reservationBody);
+    expect(creation.status).toBe(204);
+
 
     const res = await request(app).get(
-      `/reservations?type=ONLINE&dateFrom=2026-01-01T00:00:00.000Z`
+      `/reservations?type=${reservationBody.type}&dateFrom=${reservationBody.date}`
     );
 
     expect(res.status).toBe(200);

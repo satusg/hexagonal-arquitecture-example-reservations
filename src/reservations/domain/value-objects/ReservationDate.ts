@@ -28,7 +28,10 @@ export default class ReservationDate {
     return this.date.toISOString();
   }
 
-  public equals(other: ReservationDate): boolean {
+  equals(other: unknown): boolean {
+    if (!(other instanceof ReservationDate)) {
+      return false;
+    }
     return this.date.getTime() === other.date.getTime();
   }
 
@@ -41,12 +44,13 @@ export default class ReservationDate {
   }
 
   public isBeforeDate(other: ReservationDate): boolean {
-    return this.date.getTime() < other.date.getTime();
+    return this.date.getTime() <= other.date.getTime(); 
   }
-
+  
   public isAfterDate(other: ReservationDate): boolean {
-    return this.date.getTime() > other.date.getTime();
+    return this.date.getTime() >= other.date.getTime(); 
   }
+  
 
   public getValue(): Date {
     return new Date(this.date.getTime());

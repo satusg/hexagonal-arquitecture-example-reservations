@@ -1,6 +1,8 @@
 export type CreateReservationDTO = {
-    customerName: string;
-    customerEmail: string;
+    customer: {
+        name: string,
+        email: string
+    },
     date: string;
     type: string;
     uuid: string;

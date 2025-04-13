@@ -21,8 +21,10 @@ export default class ReservationMother {
 
     this.reservationProps = {
       uuid: this.uuid,
-      customerName: this.customerName,
-      customerEmail: this.customerEmail,
+      customer: {
+        name: this.customerName,
+        email: this.customerEmail,
+      },
       date: this.date,
       type: this.type,
     };

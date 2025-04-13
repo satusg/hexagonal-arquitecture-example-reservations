@@ -5,11 +5,14 @@ import ReservationUUID from "./value-objects/ReservationUUID";
 
 export type ReservationPrimitives = {
   uuid: string;
-  customerName: string;
-  customerEmail: string;
+  customer: {
+    name: string,
+    email: string
+  }
   date: string;
   type: string;
 };
+
 
 export default class Reservation {
   protected constructor(
@@ -43,8 +46,8 @@ export default class Reservation {
     return new Reservation(
       ReservationUUID.fromString(props.uuid),
       ReservationCustomer.fromPrimitives({
-        name: props.customerName,
-        email: props.customerEmail,
+        name: props.customer.name,
+        email: props.customer.email,
       }),
       ReservationDate.fromString(props.date),
       ReservationType.fromString(props.type)
@@ -54,8 +57,10 @@ export default class Reservation {
   public toPrimitives(): ReservationPrimitives {
     return {
       uuid: this.id.toString(),
-      customerName: this.customer.getName().getValue(),
-      customerEmail: this.customer.getEmail().getValue(),
+      customer: {
+        name: this.customer.getName().getValue(),
+        email: this.customer.getEmail().getValue(),
+      },
       date: this.date.toISOString(),
       type: this.type.toString(),
     };

@@ -14,8 +14,10 @@ describe("[Integration] Reservation deletion flow", () => {
   const expectReservationMatch = (received: any, expected: ReservationPrimitives) => {
     expect(received).toMatchObject({
       uuid: expected.uuid,
-      customerName: expected.customerName,
-      customerEmail: expected.customerEmail,
+      customer: {
+        name: expected.customer.name,
+        email: expected.customer.email
+      },
       type: expected.type,
     });
   };
@@ -32,6 +34,7 @@ describe("[Integration] Reservation deletion flow", () => {
     const reservationBody = ReservationMother.createPrimitivesWith();
 
     const createRes = await request(app).post("/reservations").send(reservationBody);
+
     expect(createRes.status).toBe(204);
 
     const findBefore = await request(app).get(`/reservations?uuid=${reservationBody.uuid}`);

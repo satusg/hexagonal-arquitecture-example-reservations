@@ -11,36 +11,38 @@ export default class ReservationRepositoryLocal implements ReservationRepository
   }
   async findByCriteria(criteria: ReservationCriteria): Promise<Reservation[]> {
     let results = [...this.reservations.values()];
-    
+
     if (criteria.uuid) {
       results = results.filter(reservation =>
         reservation.getId().equals(criteria.uuid));
     }
     if (criteria.hasType()) {
+      //console.log(criteria.type, results,"here");
       results = results.filter(reservation =>
         reservation.getType().equals(criteria.type)
       );
     }
-  
-    if (criteria.dateFrom) {
-      results = results.filter(reservation =>
-        reservation.getDate().getValue().getTime() >= criteria.dateFrom!.getValue().getTime()
-      );
+
+    if (criteria.date !== undefined) {
+      //console.log(criteria.date, this.reservations, results);
+      if (criteria.date.from !== undefined) {
+        results = results.filter(reservation =>
+          criteria.date?.from && reservation.getDate().isAfterDate(criteria.date.from)
+        );
+      }
+      if (criteria.date.to !== undefined) {
+        results = results.filter(reservation =>
+          criteria.date?.to && reservation.getDate().isBeforeDate(criteria.date.to)
+        );
+      }
     }
-  
-    if (criteria.dateTo) {
-      results = results.filter(reservation =>
-        reservation.getDate().getValue().getTime() <= criteria.dateTo!.getValue().getTime()
-      );
-    }
-  
     return results;
   }
-  
+
   async save(reservation: Reservation): Promise<void> {
     this.reservations.set(reservation.getId().toString(), reservation);
   }
-  
+
   async delete(uuid: ReservationUUID): Promise<void> {
     this.reservations.delete(uuid.toString());
   }

@@ -8,13 +8,13 @@ jest.mock("../../../src/reservations/infrastructure/repository/ReservationReposi
 
 describe("RetrieveReservationsByCriteriaUseCase", () => {
   let repository: jest.Mocked<ReservationRepositoryLocal>;
-  
+
   let reservations: Reservation[];
   let useCase: RetrieveReservationsByCriteriaUseCase;
 
   beforeEach(() => {
     repository = new ReservationRepositoryLocal() as jest.Mocked<ReservationRepositoryLocal>;
-   
+
     reservations = ReservationFactory.generateMany(3, {
       type: "ONLINE"
     });
@@ -26,28 +26,42 @@ describe("RetrieveReservationsByCriteriaUseCase", () => {
   it("Should parse and pass date range criteria", async () => {
     const mockedReservation = reservations[0];
 
-    await useCase.execute({ type: "ONLINE", dateFrom: mockedReservation.getDate().toISOString(), dateTo: mockedReservation.getDate().toISOString()});
-    
-    const expectedCriteria = new ReservationCriteria(undefined, mockedReservation.getType(), mockedReservation.getDate(),mockedReservation.getDate());
+    await useCase.execute({
+      type: "ONLINE", date: {
+        from: mockedReservation.getDate().toISOString(),
+        to: mockedReservation.getDate().toISOString()
+      }
+    });
+
+    const expectedCriteria = ReservationCriteria.create({
+      type: mockedReservation.getType(),
+      date: {
+        from: mockedReservation.getDate(),
+        to: mockedReservation.getDate()
+      }
+    });
     expect(repository.findByCriteria).toHaveBeenCalledWith(
-        expectedCriteria
+      expectedCriteria
     );
-    
+
   });
-  
+
   it("Should retrieve by type and uuid combined", async () => {
     const uuid = reservations[1].getId().toString();
     const type = reservations[1].getType().toString();
     await useCase.execute({ type, uuid });
-    const criteria = new ReservationCriteria(reservations[1].getId(), reservations[1].getType(), undefined, undefined)
+    const criteria = ReservationCriteria.create({
+      uuid: reservations[1].getId(),
+      type: reservations[1].getType()
+    })
     expect(repository.findByCriteria).toBeCalledWith(criteria);
-    expect(repository.findByCriteria).toBeCalledTimes(1);    
+    expect(repository.findByCriteria).toBeCalledTimes(1);
   });
-  
+
   it("Should retrieve reservations filtered by type", async () => {
     const mockedReservation = reservations[0];
-    await useCase.execute({ type: mockedReservation.getType().toString()});
-    const expectedCriteria = new ReservationCriteria(undefined, mockedReservation.getType(), undefined, undefined);
+    await useCase.execute({ type: mockedReservation.getType().toString() });
+    const expectedCriteria = ReservationCriteria.create({ type: mockedReservation.getType() });
     expect(repository.findByCriteria).toHaveBeenCalledWith(expectedCriteria);
     expect(repository.findByCriteria).toHaveBeenCalledTimes(1);
   });
@@ -55,7 +69,9 @@ describe("RetrieveReservationsByCriteriaUseCase", () => {
   it("Should retrieve reservations by uuid", async () => {
     const uuid = reservations[0].getId().toString();
     repository.findByCriteria.mockResolvedValue([reservations[0]]);
-    const expectedCriteria = new ReservationCriteria(reservations[0].getId(), undefined, undefined, undefined);
+    const expectedCriteria = ReservationCriteria.create({
+      uuid: reservations[0].getId()
+    });
     const result = await useCase.execute({ uuid });
     expect(repository.findByCriteria).toHaveBeenCalledWith(expectedCriteria);
     expect(result).toHaveLength(1);
@@ -76,13 +92,21 @@ describe("RetrieveReservationsByCriteriaUseCase", () => {
 
   it("should throw if dateFrom is invalid", async () => {
     await expect(async () =>
-      useCase.execute({ dateFrom: "invalid-date" })
+      useCase.execute({
+        date: {
+          from: "invalid-date"
+        }
+      })
     ).rejects.toThrow("Invalid date has been provided");
   });
 
   it("should throw if dateTo is invalid", async () => {
     await expect(async () =>
-      useCase.execute({ dateTo: "bad-date-format" })
+      useCase.execute({
+        date: {
+          to: "bad-date-format"
+        }
+      })
     ).rejects.toThrow("Invalid date has been provided");
   });
 

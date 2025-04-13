@@ -18,10 +18,10 @@ export default class ReservationFactory {
       : ReservationUUID.generate();
 
     const name = ReservationCustomerName.fromString(
-      overrides.customerName ?? firstName
+      overrides.customer?.name ?? firstName
     );
     const email = ReservationCustomerEmail.fromString(
-      overrides.customerEmail ?? faker.internet.email({ firstName })
+      overrides.customer?.email ?? faker.internet.email({ firstName })
     );
     const customer = ReservationCustomer.create(name, email);
 
@@ -39,8 +39,10 @@ export default class ReservationFactory {
 
     return {
       uuid: overrides.uuid ?? uuidv7(),
-      customerName: (overrides.customerName ?? firstName).trim(),
-      customerEmail: (overrides.customerEmail ?? faker.internet.email({ firstName })).trim().toLowerCase(),
+      customer: {
+        name: (overrides.customer?.name ?? firstName).trim(),
+        email: (overrides.customer?.email ?? faker.internet.email({ firstName })).trim().toLowerCase(),
+      },
       date: (overrides.date ?? faker.date.future({ years: 1 }).toISOString()).trim(),
       type: (overrides.type ?? "ONLINE").trim()
     };
