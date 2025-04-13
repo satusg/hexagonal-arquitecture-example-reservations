@@ -42,7 +42,6 @@ export default class ReservationController {
 
   async getReservationsHandler(req: Request, res: Response): Promise<void> {
     try {
-      
       const dto: RetrieveReservationDTO = {
         uuid: req.query.uuid?.toString(),
         type: req.query.type?.toString(),
